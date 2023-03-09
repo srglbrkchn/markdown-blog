@@ -10,9 +10,23 @@ app.set("view engine", "ejs");
 // make app use the route
 app.use("/articles", articleRouter);
 
+// temp articles
+const articles = [
+  {
+    title: "test article",
+    createdAt: new Date(),
+    description: "test description",
+  },
+  {
+    title: "test article 2",
+    createdAt: new Date(),
+    description: "test description",
+  },
+];
+
 // create index route
 app.get("/", (req, res) => {
-  res.render("index");
+  res.render("articles/index", { articles: articles });
 });
 
 // start the server
