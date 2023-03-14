@@ -1,8 +1,13 @@
 // create server
 const express = require("express");
+// mongoose library
+const mongoose = require("mongoose");
 // require our router
 const articleRouter = require("./routes/articles");
 const app = express();
+
+// connect to mongodb
+mongoose.connect("mongodb://localhost/blog");
 
 // set up view engine as ejs
 app.set("view engine", "ejs");
