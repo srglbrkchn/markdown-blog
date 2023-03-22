@@ -2,8 +2,12 @@
 const express = require("express");
 // mongoose library
 const mongoose = require("mongoose");
+// pull in article model
+const Article = require("./models/articles");
 // require our router
 const articleRouter = require("./routes/articles");
+// include method-override library to override form methods
+const methodOverride = require("method-override");
 const app = express();
 
 // connect to mongodb
@@ -12,27 +16,20 @@ mongoose.connect("mongodb://localhost/blog");
 // set up view engine as ejs
 app.set("view engine", "ejs");
 
-// make app use the route
-app.use("/articles", articleRouter);
+// access data from req.body
+app.use(express.urlencoded({ extended: false }));
 
-// temp articles
-const articles = [
-  {
-    title: "test article",
-    createdAt: new Date(),
-    description: "test description",
-  },
-  {
-    title: "test article 2",
-    createdAt: new Date(),
-    description: "test description",
-  },
-];
+// use method-override
+app.use(methodOverride("_method"));
 
 // create index route
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
+  const articles = await Article.find().sort({ createdAt: "desc" });
   res.render("articles/index", { articles: articles });
 });
+
+// make app use the route
+app.use("/articles", articleRouter);
 
 // start the server
 app.listen(3000, () => {
